@@ -52,7 +52,7 @@ setTimeout(() => {}, 1000);
 // Micro / Macro
 
 // Either/Optional
-asyncfns((err, ...data) => {
+asyncfns((err) => {
   if (err !== null) {
     // Tprcess error
     return;
