@@ -15,7 +15,7 @@ export function promiseMap(array, asyncCallback, concurrency = Infinity) {
     });
     executing.push(task);
 
-    //removing executed promise
+    // removing executed promise
     const removeTask = () => {
       executing.splice(executing.indexOf(task), 1);
     };
