@@ -1,45 +1,39 @@
-//const nums = [1, 2, 3];
-//const double_nums = nums.map((num) => num * 2);
-//console.log(double_nums);
-
-// async map implementation
-// asyncMap takes an array, asyncCallback and returns mapped array throw finalCallback
-function asyncMap(array, asyncCallback, finalCallback) {
+//asyncMap with debonce implementation
+export function asyncMap(
+  array,
+  asyncCallback,
+  finalCallback,
+  debounceTime = 0,
+) {
   const results = [];
-  let completed = 0;
+  let completed = 0; // amount of ended operations
+  let lastExecutionTime = Date.now(); // last callback`s execution time
 
   array.forEach((item, index) => {
-    asyncCallback(item, (err, result) => {
-      if (err) {
-        finalCallback(err, null);
-        return;
-      }
+    // ths function runs asyncCllback for each element im array
+    const execute = () => {
+      asyncCallback(item, (err, result) => {
+        if (err) {
+          finalCallback(err, null);
+          return;
+        }
+        results[index] = result;
+        completed++;
+        if (completed === array.length) {
+          finalCallback(null, results);
+        }
+      });
+    };
 
-      results[index] = result;
-      completed++;
-
-      if (completed === array.length) {
-        finalCallback(null, results);
-      }
-    });
+    // implementatin of debounce
+    // for reference used contruction of realization async running tasks on arduino
+    const now = Date.now();
+    if (now - lastExecutionTime >= debounceTime) {
+      lastExecutionTime = now;
+      execute();
+    } else {
+      setTimeout(execute, debounceTime - (now - lastExecutionTime));
+      lastExecutionTime = now + debounceTime;
+    }
   });
 }
-
-// demonstration (added 1000 ms delay for async operations emulating)
-const nums = [1, 2, 3];
-
-asyncMap(
-  nums,
-  (num, cb) => {
-    setTimeout(() => {
-      cb(null, num * 2);
-    }, 1000); // Эмулируем асинхронную операцию
-  },
-  (err, result) => {
-    if (err) {
-      console.error("Ошибка:", err);
-    } else {
-      console.log("Результат:", result); // [2, 4, 6]
-    }
-  },
-);

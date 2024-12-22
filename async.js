@@ -37,7 +37,7 @@
 //
 // NOTE; this are conceptual examples, not a valid Node.js code
 
-const filesToRead = ["a.txt", "b.txt"];
+/*const filesToRead = ["a.txt", "b.txt"];
 
 const a = fs.readFileSync(filesToRead[1]);
 const b = fs.readFileSync(filesToRead[2]);
@@ -94,3 +94,4 @@ asyncMap(
     console.log(err, result); // null [2, 4, 6]
   },
 );
+*/
