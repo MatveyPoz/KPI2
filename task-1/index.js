@@ -8,18 +8,22 @@ export function asyncMap(
   const results = [];
   let completed = 0; // amount of ended operations
   let lastExecutionTime = Date.now(); // last callback`s execution time
+  let isFinalCallbackCalled = false; // flag which check is finalCallback called
 
   array.forEach((item, index) => {
     // ths function runs asyncCllback for each element im array
     const execute = () => {
       asyncCallback(item, (err, result) => {
-        if (err) {
+        if (err && !isFinalCallbackCalled) {
+          isFinalCallbackCalled = true;
           finalCallback(err, null);
           return;
         }
         results[index] = result;
         completed++;
-        if (completed === array.length) {
+
+        if (completed === array.length && !isFinalCallbackCalled) {
+          isFinalCallbackCalled = true;
           finalCallback(null, results);
         }
       });
